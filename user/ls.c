@@ -26,7 +26,7 @@ void
 ls(char *path)
 {
   char buf[512], *p;
-  int fd;
+  int fd;  
   struct dirent de;
   struct stat st;
 
