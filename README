@@ -1,5 +1,6 @@
 # xv6 lab !
 - 目前刚刚用了大约两个两个星期时间完成了util实验
+- x预计第二个实验花费两周的时间
 
 xv6 is a re-implementation of Dennis Ritchie's and Ken Thompson's Unix
 Version 6 (v6).  xv6 loosely follows the structure and style of v6,
