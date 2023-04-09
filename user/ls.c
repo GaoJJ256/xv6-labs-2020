@@ -3,6 +3,8 @@
 #include "user/user.h"
 #include "kernel/fs.h"
 
+
+// 返回当前路径的最后一个文件
 char*
 fmtname(char *path)
 {
@@ -27,15 +29,20 @@ ls(char *path)
 {
   char buf[512], *p;
   int fd;  
-  struct dirent de;
-  struct stat st;
+  struct dirent de;  // 目录信息
+// struct dirent {
+//   ushort inum;
+//   char name[DIRSIZ];
+// };
+  struct stat st;  // 文件描述块
 
-  if((fd = open(path, 0)) < 0){
+  if((fd = open(path, 0)) < 0){  //获得文件描述符
     fprintf(2, "ls: cannot open %s\n", path);
     return;
   }
 
-  if(fstat(fd, &st) < 0){
+  if(fstat(fd, &st) < 0){  
+    // fstat 通过文件描述符读取相关的stat信息，并放入st中
     fprintf(2, "ls: cannot stat %s\n", path);
     close(fd);
     return;
@@ -52,15 +59,16 @@ ls(char *path)
       printf("ls: path too long\n");
       break;
     }
-    strcpy(buf, path);
-    p = buf+strlen(buf);
-    *p++ = '/';
-    while(read(fd, &de, sizeof(de)) == sizeof(de)){
-      if(de.inum == 0)
+    strcpy(buf, path); 
+    p = buf+strlen(buf); 
+    *p++ = '/';  // 给路径尾部添上‘/’
+    while(read(fd, &de, sizeof(de)) == sizeof(de)){  // 循环读取目录中的文件
+        // de为dirent类型
+      if(de.inum == 0)  // 文件不存在或者已经被删除
         continue;
-      memmove(p, de.name, DIRSIZ);
-      p[DIRSIZ] = 0;
-      if(stat(buf, &st) < 0){
+      memmove(p, de.name, DIRSIZ);  //将文件路径末尾添上文件名称
+      p[DIRSIZ] = 0; // 为结尾添加一个空字符，让buf成为一个标准的字符串
+      if(stat(buf, &st) < 0){  // 获取以buf为路径的文件信息
         printf("ls: cannot stat %s\n", buf);
         continue;
       }

@@ -68,6 +68,7 @@ void find(char * path, const char *target){
                 // 如果是文件，如果名称匹配，就输出
                 else if(strcmp(de.name, target) == 0)
                     printf("%s\n", buf);
+
             }
             break;
     }
