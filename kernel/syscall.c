@@ -30,10 +30,11 @@ fetchstr(uint64 addr, char *buf, int max)
   return strlen(buf);
 }
 
+// 检索相应的保存的用户寄存器
 static uint64
 argraw(int n)
 {
-  struct proc *p = myproc();
+  struct proc *p = myproc(); // 获取当前进程控制块的指针
   switch (n) {
   case 0:
     return p->trapframe->a0;
@@ -71,6 +72,14 @@ argaddr(int n, uint64 *ip)
 // Fetch the nth word-sized system call argument as a null-terminated string.
 // Copies into buf, at most max.
 // Returns string length if OK (including nul), -1 if error.
+// 该函数的作用是将第 n 个系统调用参数作为以空字符结尾的字符串读取出来，
+// 并将其复制到 buf 缓冲区中，最多复制 max 个字符。如果操作成功，则返
+// 回读取到的字符串长度（包括空字符），如果操作失败，则返回 -1。
+
+// 在操作系统内核中，当用户程序发起带有字符串参数的系统调用时，操作系统内
+// 核需要将字符串参数从用户态内存空间读取到内核态内存空间中，以便内核能够
+// 对其进行处理。这个函数就是用来完成这个任务的，它可以帮助内核读取字符串
+// 参数并将其复制到内核态缓冲区中，以便内核进行后续处理。
 int
 argstr(int n, char *buf, int max)
 {
