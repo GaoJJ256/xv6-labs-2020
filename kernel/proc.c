@@ -6,11 +6,11 @@
 #include "proc.h"
 #include "defs.h"
 
-struct cpu cpus[NCPU];
+struct cpu cpus[NCPU];  // cpu
 
-struct proc proc[NPROC];
+struct proc proc[NPROC];  // 进程信息
 
-struct proc *initproc;
+struct proc *initproc;  // 启动进程
 
 int nextpid = 1;
 struct spinlock pid_lock;
@@ -169,6 +169,7 @@ freeproc(struct proc *p)
   p->killed = 0;
   p->xstate = 0;
   p->state = UNUSED;
+  p->trace_mask = 0;
 }
 
 // Create a user page table for a given process, with no user memory,
@@ -301,6 +302,9 @@ fork(void)
 
   // Cause fork to return 0 in the child.
   np->trapframe->a0 = 0;
+
+  // 将掩码传给子进程 
+  np->trace_mask=p->trace_mask;
 
   // increment reference counts on open file descriptors.
   for(i = 0; i < NOFILE; i++)
